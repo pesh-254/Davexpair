@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JUNE-X Pair Code</title>
+  <title>DAVE-X — Pair Code</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     *, *::before, *::after {
@@ -14,13 +14,18 @@
     }
 
     :root {
-      --green: #00ffaa;
-      --blue: #0088ff;
-      --purple: #7b2fff;
-      --dark: #020c1b;
-      --card: rgba(8, 22, 46, 0.82);
-      --border: rgba(0, 255, 170, 0.18);
-      --red: #ff3e6c;
+      --blue: #0079F2;
+      --blue-light: #3b9eff;
+      --blue-glow: rgba(0, 121, 242, 0.35);
+      --pink: #F059DA;
+      --pink-light: #f580e4;
+      --pink-glow: rgba(240, 89, 218, 0.35);
+      --red: #ff4d6a;
+      --bg: #0d0d14;
+      --surface: rgba(18, 18, 30, 0.88);
+      --border: rgba(255, 255, 255, 0.07);
+      --text: #e8e8f0;
+      --muted: rgba(232, 232, 240, 0.45);
     }
 
     body {
@@ -29,45 +34,33 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      background: var(--dark);
-      font-family: 'Rajdhani', sans-serif;
-      color: #cde8e0;
+      background: var(--bg);
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
       overflow-x: hidden;
     }
 
     #bg-canvas {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
+      position: fixed; inset: 0;
+      z-index: 0; pointer-events: none;
     }
 
-    .scanlines {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      background: repeating-linear-gradient(
-        to bottom,
-        transparent 0px, transparent 3px,
-        rgba(0,255,170,0.02) 3px, rgba(0,255,170,0.02) 4px
-      );
-    }
-
-    /* ── Card ── */
     .card {
       position: relative;
       z-index: 2;
       width: 90%;
-      max-width: 460px;
-      padding: 3rem 2.2rem 2rem;
-      background: var(--card);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
+      max-width: 440px;
+      padding: 3rem 2.2rem 2.2rem;
+      background: var(--surface);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 24px;
       border: 1px solid var(--border);
       box-shadow:
-        0 0 50px rgba(0,255,170,0.07),
-        0 25px 60px rgba(0,0,0,0.65);
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 24px 80px rgba(0,0,0,0.7),
+        0 0 60px rgba(0,121,242,0.06),
+        0 0 80px rgba(240,89,218,0.04);
       overflow: hidden;
     }
 
@@ -75,122 +68,106 @@
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--purple), var(--green), var(--blue), var(--green), var(--purple));
+      height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--pink), var(--blue-light), var(--pink), var(--blue));
       background-size: 300% 100%;
-      animation: barShimmer 4s linear infinite;
+      animation: shimmer 5s linear infinite;
     }
 
-    @keyframes barShimmer {
+    @keyframes shimmer {
       0%   { background-position: 0% 0%; }
       100% { background-position: 300% 0%; }
     }
 
-    .card::after {
-      content: '';
-      position: absolute;
-      bottom: 0; right: 0;
-      width: 55px; height: 55px;
-      border-bottom: 2px solid rgba(0,255,170,0.2);
-      border-right: 2px solid rgba(0,255,170,0.2);
-      border-radius: 0 0 20px 0;
-    }
-
-    .corner-tl {
-      position: absolute;
-      top: 0; left: 0;
-      width: 55px; height: 55px;
-      border-top: 2px solid rgba(0,255,170,0.2);
-      border-left: 2px solid rgba(0,255,170,0.2);
-      border-radius: 20px 0 0 0;
-      z-index: 3;
-    }
-
-    /* ── Header ── */
     .header {
       text-align: center;
       margin-bottom: 2rem;
     }
 
     .icon-wrap {
-      width: 60px;
-      height: 60px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, var(--purple), var(--blue));
+      width: 62px;
+      height: 62px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--blue), var(--pink));
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.6rem;
       color: #fff;
-      margin: 0 auto 1rem;
-      box-shadow: 0 0 24px rgba(123,47,255,0.5);
+      margin: 0 auto 1.2rem;
+      box-shadow: 0 0 30px var(--blue-glow), 0 0 20px var(--pink-glow);
       animation: iconPulse 3s ease-in-out infinite;
     }
 
     @keyframes iconPulse {
-      0%, 100% { box-shadow: 0 0 24px rgba(123,47,255,0.5); }
-      50%       { box-shadow: 0 0 40px rgba(123,47,255,0.8), 0 0 70px rgba(0,136,255,0.3); }
+      0%, 100% { box-shadow: 0 0 30px var(--blue-glow), 0 0 20px var(--pink-glow); }
+      50%       { box-shadow: 0 0 48px rgba(0,121,242,0.55), 0 0 36px rgba(240,89,218,0.45); }
     }
 
     .title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 900;
-      letter-spacing: 3px;
-      background: linear-gradient(90deg, var(--green), var(--blue));
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      background: linear-gradient(90deg, var(--blue-light), var(--pink-light));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
+      margin-bottom: 0.5rem;
     }
 
     .subtitle {
-      margin-top: 0.5rem;
-      font-size: 0.92rem;
-      color: rgba(205,232,224,0.55);
-      line-height: 1.6;
+      font-size: 0.88rem;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.7;
     }
 
-    /* ── Divider ── */
     .divider {
       width: 100%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
       margin-bottom: 1.8rem;
     }
 
-    /* ── Input group ── */
     .input-label {
-      font-size: 0.82rem;
-      font-weight: 700;
-      letter-spacing: 1.5px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
-      color: rgba(205,232,224,0.55);
-      margin-bottom: 0.5rem;
+      color: var(--muted);
+      margin-bottom: 0.55rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .input-label i {
+      color: var(--blue-light);
     }
 
     .input-group {
       display: flex;
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
-      border: 1px solid rgba(0,255,170,0.2);
-      background: rgba(2,12,27,0.6);
-      transition: border-color 0.25s;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.03);
+      transition: border-color 0.25s, box-shadow 0.25s;
       margin-bottom: 1.2rem;
     }
 
     .input-group:focus-within {
-      border-color: var(--green);
-      box-shadow: 0 0 18px rgba(0,255,170,0.15);
+      border-color: rgba(0,121,242,0.5);
+      box-shadow: 0 0 0 3px rgba(0,121,242,0.12);
     }
 
     .input-prefix {
       padding: 0 14px;
       display: flex;
       align-items: center;
-      font-size: 1rem;
-      color: var(--green);
-      border-right: 1px solid rgba(0,255,170,0.15);
-      background: rgba(0,255,170,0.04);
+      font-size: 0.95rem;
+      color: var(--blue-light);
+      border-right: 1px solid rgba(255,255,255,0.07);
+      background: rgba(0,121,242,0.06);
     }
 
     .input-group input {
@@ -199,34 +176,36 @@
       background: transparent;
       border: none;
       outline: none;
-      color: #e5f5f1;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
     }
 
     .input-group input::placeholder {
-      color: rgba(205,232,224,0.3);
+      color: rgba(232, 232, 240, 0.25);
     }
 
-    /* ── Submit button ── */
     .btn-submit {
       width: 100%;
-      padding: 1rem;
-      border-radius: 12px;
+      padding: 0.95rem;
+      border-radius: 14px;
       border: none;
-      background: linear-gradient(135deg, var(--purple), var(--blue));
+      background: linear-gradient(135deg, var(--blue), #005dc4);
       color: #fff;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
       font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      letter-spacing: 0.4px;
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      box-shadow: 0 4px 20px rgba(123,47,255,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(0,121,242,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .btn-submit::after {
@@ -234,30 +213,19 @@
       position: absolute;
       top: 0; left: -100%;
       width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
       transition: left 0.4s ease;
     }
 
     .btn-submit:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 30px rgba(123,47,255,0.5);
+      box-shadow: 0 8px 36px rgba(0,121,242,0.55);
     }
 
-    .btn-submit:hover::after {
-      left: 100%;
-    }
+    .btn-submit:hover::after { left: 100%; }
+    .btn-submit:active { transform: translateY(-1px) scale(0.99); }
+    .btn-submit:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
-    .btn-submit:active {
-      transform: translateY(-1px) scale(0.99);
-    }
-
-    .btn-submit:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* ── Status area ── */
     .status-wrap {
       margin-top: 1.4rem;
       min-height: 56px;
@@ -266,13 +234,12 @@
       justify-content: center;
     }
 
-    /* ── Code display ── */
     .code-box {
       width: 100%;
-      padding: 1rem 1.4rem;
-      border-radius: 12px;
-      background: rgba(0,255,170,0.05);
-      border: 1px solid rgba(0,255,170,0.2);
+      padding: 1.2rem 1.4rem;
+      border-radius: 14px;
+      background: rgba(0,121,242,0.07);
+      border: 1px solid rgba(0,121,242,0.2);
       cursor: pointer;
       transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
       text-align: center;
@@ -281,87 +248,100 @@
     }
 
     .code-box:hover {
-      background: rgba(0,255,170,0.1);
+      background: rgba(0,121,242,0.12);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,255,170,0.15);
+      box-shadow: 0 6px 24px rgba(0,121,242,0.2);
     }
 
     .code-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 2px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      color: rgba(205,232,224,0.5);
-      margin-bottom: 0.3rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
     }
 
     .code-value {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: 4px;
-      color: var(--green);
-      text-shadow: 0 0 14px rgba(0,255,170,0.7);
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: 6px;
+      background: linear-gradient(90deg, var(--blue-light), var(--pink-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
       animation: codeGlow 2s ease-in-out infinite;
     }
 
     @keyframes codeGlow {
-      0%, 100% { text-shadow: 0 0 14px rgba(0,255,170,0.7); }
-      50%       { text-shadow: 0 0 28px rgba(0,255,170,1), 0 0 50px rgba(0,255,170,0.4); }
+      0%, 100% { filter: brightness(1); }
+      50%       { filter: brightness(1.2); }
     }
 
     .code-hint {
-      font-size: 0.75rem;
-      color: rgba(205,232,224,0.4);
-      margin-top: 0.3rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
     }
 
-    /* ── Error / info messages ── */
+    .code-hint i { color: var(--blue-light); }
+
     .msg {
       width: 100%;
       padding: 0.9rem 1.2rem;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      font-weight: 600;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      font-weight: 500;
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .msg.error {
-      background: rgba(255,62,108,0.1);
-      border: 1px solid rgba(255,62,108,0.25);
-      color: #ff7096;
+      background: rgba(255, 77, 106, 0.1);
+      border: 1px solid rgba(255, 77, 106, 0.22);
+      color: #ff7a90;
     }
 
     .msg.info {
-      background: rgba(0,136,255,0.08);
-      border: 1px solid rgba(0,136,255,0.2);
-      color: #66aaff;
+      background: rgba(0,121,242,0.08);
+      border: 1px solid rgba(0,121,242,0.2);
+      color: var(--blue-light);
     }
 
-    /* ── Spinner ── */
     .spinner {
-      width: 26px;
-      height: 26px;
-      border: 3px solid rgba(0,255,170,0.2);
-      border-top-color: var(--green);
+      width: 26px; height: 26px;
+      border: 2.5px solid rgba(255,255,255,0.1);
+      border-top-color: var(--blue-light);
+      border-right-color: var(--pink);
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      animation: spin 0.75s linear infinite;
       margin: 0 auto;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Footer ── */
     .footer {
       margin-top: 2rem;
       padding-top: 1rem;
       border-top: 1px solid var(--border);
       text-align: center;
-      font-size: 0.8rem;
-      color: rgba(205,232,224,0.35);
-      letter-spacing: 1px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .footer span {
+      background: linear-gradient(90deg, var(--blue-light), var(--pink-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 600;
     }
 
     @media (max-width: 480px) {
@@ -371,11 +351,8 @@
 </head>
 <body>
   <canvas id="bg-canvas"></canvas>
-  <div class="scanlines"></div>
 
   <div class="card">
-    <div class="corner-tl"></div>
-
     <div class="header">
       <div class="icon-wrap"><i class="fas fa-plug"></i></div>
       <h1 class="title">PAIR CODE</h1>
@@ -384,73 +361,66 @@
 
     <div class="divider"></div>
 
-    <p class="input-label"><i class="fas fa-phone-alt" style="margin-right:6px;color:var(--green)"></i>Phone Number</p>
+    <p class="input-label"><i class="fas fa-phone-alt"></i> Phone Number</p>
     <div class="input-group">
       <span class="input-prefix"><i class="fas fa-hashtag"></i></span>
       <input type="tel" id="phone" placeholder="254712345678" inputmode="numeric">
     </div>
 
     <button class="btn-submit" id="submit-btn">
-      <i class="fas fa-paper-plane" style="margin-right:8px"></i>Get Pair Code
+      <i class="fas fa-paper-plane"></i> Get Pair Code
     </button>
 
     <div class="status-wrap" id="status"></div>
 
     <div class="footer">
-      JUNE-X &copy; 2025 &mdash; Secure WhatsApp Session Generator
+      DAVE-X &copy; 2025 &mdash; <span>Secure</span> WhatsApp Session Generator
     </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
   <script>
-    // ── Particle canvas ──
     const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
+    const ctx    = canvas.getContext('2d');
     let W, H, particles = [];
+
+    const COLORS = [[0,121,242],[59,158,255],[240,89,218],[245,128,228]];
 
     function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
 
-    function Particle() { this.reset(); }
-    Particle.prototype.reset = function() {
-      this.x = Math.random() * W; this.y = Math.random() * H;
-      this.r = Math.random() * 1.2 + 0.3;
-      this.vx = (Math.random() - 0.5) * 0.35; this.vy = (Math.random() - 0.5) * 0.35;
-      this.alpha = Math.random() * 0.4 + 0.1;
-      this.color = ['#00ffaa','#0088ff','#7b2fff'][Math.floor(Math.random()*3)];
-    };
-    Particle.prototype.update = function() {
-      this.x += this.vx; this.y += this.vy;
-      if (this.x<0||this.x>W||this.y<0||this.y>H) this.reset();
-    };
+    function makeParticle() {
+      const c = COLORS[Math.floor(Math.random() * COLORS.length)];
+      return { x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.4+0.4,
+               vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
+               alpha: Math.random()*0.4+0.1, color: c };
+    }
 
-    function init() { resize(); particles = Array.from({length:100}, ()=>new Particle()); }
-    function draw() {
-      ctx.clearRect(0,0,W,H);
-      for (let i=0;i<particles.length;i++) {
-        for (let j=i+1;j<particles.length;j++) {
-          const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
-          const d=Math.sqrt(dx*dx+dy*dy);
+    function init() { resize(); particles = Array.from({length:100}, makeParticle); }
+
+    function loop() {
+      ctx.clearRect(0, 0, W, H);
+      for (let i=0; i<particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x<0||p.x>W||p.y<0||p.y>H) { Object.assign(p, makeParticle()); p.x=Math.random()*W; p.y=Math.random()*H; }
+        for (let j=i+1; j<particles.length; j++) {
+          const q=particles[j];
+          const dx=p.x-q.x, dy=p.y-q.y, d=Math.sqrt(dx*dx+dy*dy);
           if (d<110) {
             ctx.beginPath();
-            ctx.strokeStyle=`rgba(0,255,170,${0.07*(1-d/110)})`;
-            ctx.lineWidth=0.5;
-            ctx.moveTo(particles[i].x,particles[i].y);
-            ctx.lineTo(particles[j].x,particles[j].y);
-            ctx.stroke();
+            ctx.strokeStyle=`rgba(${p.color[0]},${p.color[1]},${p.color[2]},${0.06*(1-d/110)})`;
+            ctx.lineWidth=0.6; ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke();
           }
         }
-      }
-      particles.forEach(p=>{
-        p.update();
         ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fillStyle=p.color; ctx.globalAlpha=p.alpha; ctx.fill(); ctx.globalAlpha=1;
-      });
-      requestAnimationFrame(draw);
+        ctx.fillStyle=`rgba(${p.color[0]},${p.color[1]},${p.color[2]},${p.alpha})`; ctx.fill();
+      }
+      requestAnimationFrame(loop);
     }
-    window.addEventListener('resize', resize);
-    init(); draw();
 
-    // ── Pair code logic ──
+    window.addEventListener('resize', resize);
+    init(); loop();
+
     const phoneInput = document.getElementById('phone');
     const submitBtn  = document.getElementById('submit-btn');
     const statusEl   = document.getElementById('status');
@@ -464,7 +434,7 @@
           <div class="code-box">
             <div class="code-label">Pair Code &mdash; Copied!</div>
             <div class="code-value">${rawCode}</div>
-            <div class="code-hint"><i class="fas fa-check-circle" style="color:var(--green)"></i> Copied to clipboard</div>
+            <div class="code-hint"><i class="fas fa-check-circle"></i> Copied to clipboard</div>
           </div>`);
         setTimeout(() => renderCode(rawCode), 1500);
       } catch (_) {}
@@ -475,18 +445,17 @@
         <div class="code-box" onclick="copyCode('${code}')">
           <div class="code-label">Your Pair Code &mdash; tap to copy</div>
           <div class="code-value">${code}</div>
-          <div class="code-hint"><i class="fas fa-copy" style="margin-right:4px"></i>Tap to copy</div>
+          <div class="code-hint"><i class="fas fa-copy"></i> Tap to copy</div>
         </div>`);
     }
 
     submitBtn.addEventListener('click', async () => {
       const raw = phoneInput.value.replace(/[^0-9]/g, '');
-
       if (!raw) {
-        return setStatus('<div class="msg error"><i class="fas fa-exclamation-circle" style="margin-right:6px"></i>Enter your WhatsApp number with country code.</div>');
+        return setStatus('<div class="msg error"><i class="fas fa-exclamation-circle"></i>Enter your WhatsApp number with country code.</div>');
       }
       if (raw.length < 10) {
-        return setStatus('<div class="msg error"><i class="fas fa-exclamation-circle" style="margin-right:6px"></i>Number seems too short. Include country code.</div>');
+        return setStatus('<div class="msg error"><i class="fas fa-exclamation-circle"></i>Number seems too short. Include your country code.</div>');
       }
 
       submitBtn.disabled = true;
@@ -496,20 +465,18 @@
         const { data } = await axios(`/code?number=${raw}`);
         const code = data.code || 'Unavailable';
         if (code.toLowerCase().includes('unavailable')) {
-          setStatus('<div class="msg error"><i class="fas fa-times-circle" style="margin-right:6px"></i>Service temporarily unavailable. Please retry.</div>');
+          setStatus('<div class="msg error"><i class="fas fa-times-circle"></i>Service temporarily unavailable. Please retry.</div>');
         } else {
           renderCode(code);
         }
       } catch (_) {
-        setStatus('<div class="msg error"><i class="fas fa-times-circle" style="margin-right:6px"></i>Request failed. Check your connection and retry.</div>');
+        setStatus('<div class="msg error"><i class="fas fa-times-circle"></i>Request failed. Check your connection and retry.</div>');
       } finally {
         submitBtn.disabled = false;
       }
     });
 
-    phoneInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') submitBtn.click();
-    });
+    phoneInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitBtn.click(); });
   </script>
 </body>
 </html>
