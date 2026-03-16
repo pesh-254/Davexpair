@@ -1,3 +1,11 @@
+# Node
+node_modules/
+package-lock.json
+yarn.lock
+
+# Temp session files
+temp/
+
 # Build and Release Folders
 bin-debug/
 bin-release/
