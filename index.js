@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`\nJUNE-X Session Generator\nServer running on http://localhost:${PORT}\n`);
+  console.log(`\nDAVE-X Session Generator\nServer running on http://localhost:${PORT}\n`);
 });
 
 module.exports = app;

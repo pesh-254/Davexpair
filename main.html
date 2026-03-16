@@ -255,8 +255,78 @@
       transform: translateY(-1px) scale(0.98);
     }
 
+    /* ── Links section ── */
+    .links-section {
+      margin-top: 1.8rem;
+      padding-top: 1.4rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .links-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.9rem;
+      text-align: center;
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.7rem 0.9rem;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text);
+      transition: background 0.2s, transform 0.2s, border-color 0.2s;
+      overflow: hidden;
+    }
+
+    .link-card:hover {
+      background: rgba(255,255,255,0.07);
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.13);
+    }
+
+    .link-card:active { transform: translateY(-1px) scale(0.98); }
+
+    .link-icon {
+      width: 32px; height: 32px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; flex-shrink: 0;
+    }
+
+    .link-icon.blue  { background: rgba(0,121,242,0.18); color: var(--blue-light); }
+    .link-icon.pink  { background: rgba(240,89,218,0.18); color: var(--pink-light); }
+    .link-icon.green { background: rgba(34,197,94,0.15);  color: #4ade80; }
+    .link-icon.purple { background: rgba(139,92,246,0.18); color: #a78bfa; }
+
+    .link-info { min-width: 0; }
+
+    .link-title {
+      font-size: 0.78rem; font-weight: 700;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      color: var(--text);
+    }
+
+    .link-sub {
+      font-size: 0.68rem; color: var(--muted); margin-top: 1px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
     .footer {
-      margin-top: 2.2rem;
+      margin-top: 1.6rem;
       padding-top: 1.2rem;
       border-top: 1px solid var(--border);
       text-align: center;
@@ -394,6 +464,40 @@
       <button onclick="window.open('https://github.com/Davex-254/DAVE-X')" class="btn btn-ghost">
         <i class="fab fa-github"></i> Fork Repo
       </button>
+    </div>
+
+    <div class="links-section">
+      <p class="links-label"><i class="fas fa-globe" style="margin-right:6px;opacity:.5"></i>Dave's Links</p>
+      <div class="links-grid">
+        <a class="link-card" href="https://davexpremobfuscator.zone.id/" target="_blank">
+          <div class="link-icon blue"><i class="fas fa-shield-alt"></i></div>
+          <div class="link-info">
+            <div class="link-title">Obfuscator</div>
+            <div class="link-sub">davexpremobfuscator</div>
+          </div>
+        </a>
+        <a class="link-card" href="https://www.davex-moviezone.zone.id/" target="_blank">
+          <div class="link-icon pink"><i class="fas fa-film"></i></div>
+          <div class="link-info">
+            <div class="link-title">Movie Zone</div>
+            <div class="link-sub">davex-moviezone</div>
+          </div>
+        </a>
+        <a class="link-card" href="https://whatsapp.com/channel/0029VbApvFQ2Jl84lhONkc3k" target="_blank">
+          <div class="link-icon green"><i class="fab fa-whatsapp"></i></div>
+          <div class="link-info">
+            <div class="link-title">WA Channel</div>
+            <div class="link-sub">Follow Updates</div>
+          </div>
+        </a>
+        <a class="link-card" href="https://github.com/Davex-254/DAVE-X" target="_blank">
+          <div class="link-icon purple"><i class="fab fa-github"></i></div>
+          <div class="link-info">
+            <div class="link-title">GitHub Repo</div>
+            <div class="link-sub">Davex-254/DAVE-X</div>
+          </div>
+        </a>
+      </div>
     </div>
 
     <div class="footer">
