@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DAVE-X — QR Scan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --blue: #0079F2;
+      --blue-light: #3b9eff;
+      --blue-glow: rgba(0,121,242,0.35);
+      --pink: #F059DA;
+      --pink-light: #f580e4;
+      --pink-glow: rgba(240,89,218,0.35);
+      --bg: #0d0d14;
+      --surface: rgba(18,18,30,0.88);
+      --border: rgba(255,255,255,0.07);
+      --text: #e8e8f0;
+      --muted: rgba(232,232,240,0.45);
+    }
+
+    body {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-height: 100vh; background: var(--bg);
+      font-family: 'Inter', sans-serif; color: var(--text);
+      overflow-x: hidden;
+    }
+
+    #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    .card {
+      position: relative; z-index: 2;
+      width: 90%; max-width: 420px;
+      padding: 2.8rem 2.2rem 2.2rem;
+      background: var(--surface);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-radius: 24px; border: 1px solid var(--border);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 24px 80px rgba(0,0,0,0.7),
+        0 0 60px rgba(0,121,242,0.06),
+        0 0 80px rgba(240,89,218,0.04);
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--pink), var(--blue-light), var(--pink), var(--blue));
+      background-size: 300% 100%; animation: shimmer 5s linear infinite;
+    }
+
+    @keyframes shimmer { 0% { background-position: 0% 0%; } 100% { background-position: 300% 0%; } }
+
+    .header { text-align: center; margin-bottom: 1.8rem; }
+
+    .icon-wrap {
+      width: 62px; height: 62px; border-radius: 18px;
+      background: linear-gradient(135deg, var(--blue), var(--pink));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; color: #fff; margin: 0 auto 1.2rem;
+      box-shadow: 0 0 30px var(--blue-glow), 0 0 20px var(--pink-glow);
+      animation: iconPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes iconPulse {
+      0%, 100% { box-shadow: 0 0 30px var(--blue-glow), 0 0 20px var(--pink-glow); }
+      50%       { box-shadow: 0 0 48px rgba(0,121,242,0.55), 0 0 36px rgba(240,89,218,0.45); }
+    }
+
+    .title {
+      font-size: 1.45rem; font-weight: 800;
+      background: linear-gradient(90deg, var(--blue-light), var(--pink-light));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      margin-bottom: 0.4rem;
+    }
+
+    .subtitle { font-size: 0.86rem; color: var(--muted); line-height: 1.7; }
+
+    .divider {
+      height: 1px; width: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+      margin-bottom: 1.8rem;
+    }
+
+    /* QR frame */
+    .qr-frame {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 18px;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 0 40px rgba(0,121,242,0.12), 0 0 30px rgba(240,89,218,0.06);
+      margin-bottom: 1.4rem;
+    }
+
+    .qr-frame img {
+      width: 100%; height: 100%;
+      object-fit: contain; display: none;
+      border-radius: 18px;
+    }
+
+    .qr-frame img.loaded { display: block; }
+
+    /* Corner accents on QR frame */
+    .qr-frame::before, .qr-frame::after {
+      content: ''; position: absolute; width: 22px; height: 22px;
+      border-radius: 4px; z-index: 2;
+    }
+    .qr-frame::before { top: 8px; left: 8px; border-top: 3px solid var(--blue); border-left: 3px solid var(--blue); }
+    .qr-frame::after  { bottom: 8px; right: 8px; border-bottom: 3px solid var(--pink); border-right: 3px solid var(--pink); }
+
+    /* Loading state inside QR frame */
+    .qr-loading {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+      padding: 2rem;
+    }
+
+    .qr-loading.hidden { display: none; }
+
+    .ring-spinner {
+      width: 52px; height: 52px; position: relative;
+    }
+
+    .ring-spinner::before, .ring-spinner::after {
+      content: ''; position: absolute; inset: 0;
+      border-radius: 50%; border: 3px solid transparent;
+    }
+
+    .ring-spinner::before {
+      border-top-color: var(--blue);
+      border-right-color: var(--blue);
+      animation: spin 1s linear infinite;
+    }
+
+    .ring-spinner::after {
+      border-bottom-color: var(--pink);
+      border-left-color: var(--pink);
+      animation: spin 1s linear infinite reverse;
+      inset: 6px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .qr-loading p {
+      font-size: 0.82rem; color: #888; font-weight: 500; text-align: center;
+    }
+
+    /* Error state */
+    .qr-error {
+      display: none; flex-direction: column;
+      align-items: center; gap: 10px;
+      padding: 1.5rem; text-align: center;
+    }
+
+    .qr-error.show { display: flex; }
+    .qr-error i { font-size: 2rem; color: #ff4d6a; }
+    .qr-error p { font-size: 0.84rem; color: var(--muted); }
+
+    /* Status badge */
+    .status-badge {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.3px;
+      margin-bottom: 1.4rem; padding: 6px 14px;
+      border-radius: 100px; width: fit-content; margin-inline: auto;
+    }
+
+    .status-badge.loading {
+      background: rgba(0,121,242,0.1); border: 1px solid rgba(0,121,242,0.2);
+      color: var(--blue-light);
+    }
+
+    .status-badge.ready {
+      background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25);
+      color: #4ade80;
+    }
+
+    .status-badge.expired {
+      background: rgba(255,77,106,0.1); border: 1px solid rgba(255,77,106,0.2);
+      color: #ff7a90;
+    }
+
+    .pulse-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: currentColor; animation: blink 1.4s ease-in-out infinite;
+    }
+
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+    /* Buttons */
+    .btn-row { display: flex; gap: 0.75rem; width: 100%; }
+
+    .action-btn {
+      flex: 1; padding: 0.8rem 1rem;
+      border-radius: 12px; border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 6px;
+      transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+      letter-spacing: 0.2px;
+    }
+
+    .btn-refresh {
+      background: linear-gradient(135deg, var(--blue), #005dc4);
+      color: #fff; box-shadow: 0 4px 18px rgba(0,121,242,0.35);
+    }
+
+    .btn-refresh:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,121,242,0.5); filter: brightness(1.08); }
+
+    .btn-home {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1) !important;
+      color: var(--muted);
+    }
+
+    .btn-home:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); color: var(--text); }
+
+    .action-btn:active { transform: translateY(-1px) scale(0.98); }
+
+    .footer {
+      margin-top: 1.8rem; padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      text-align: center; font-size: 0.75rem; color: var(--muted);
+    }
+
+    .footer span {
+      background: linear-gradient(90deg, var(--blue-light), var(--pink-light));
+      -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="card">
+    <div class="header">
+      <div class="icon-wrap"><i class="fas fa-qrcode"></i></div>
+      <h1 class="title">SCAN QR CODE</h1>
+      <p class="subtitle">Open WhatsApp → Linked Devices → Link a Device,<br>then scan this code with your phone.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="status-badge loading" id="status-badge">
+      <span class="pulse-dot"></span>
+      <span id="status-text">Generating QR code…</span>
+    </div>
+
+    <div class="qr-frame" id="qr-frame">
+      <div class="qr-loading" id="qr-loading">
+        <div class="ring-spinner"></div>
+        <p>Connecting to WhatsApp…</p>
+      </div>
+      <div class="qr-error" id="qr-error">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>Failed to generate QR code.<br>Please try refreshing.</p>
+      </div>
+      <img id="qr-img" alt="WhatsApp QR Code">
+    </div>
+
+    <div class="btn-row">
+      <button class="action-btn btn-refresh" id="btn-refresh" onclick="loadQR()">
+        <i class="fas fa-sync-alt"></i> Refresh QR
+      </button>
+      <button class="action-btn btn-home" onclick="window.location.href='/'">
+        <i class="fas fa-home"></i> Home
+      </button>
+    </div>
+
+    <div class="footer">
+      DAVE-X &copy; 2025 &mdash; <span>Secure</span> WhatsApp Session Generator
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('bg-canvas');
+    const ctx    = canvas.getContext('2d');
+    let W, H, particles = [];
+    const COLORS = [[0,121,242],[59,158,255],[240,89,218],[245,128,228]];
+    function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+    function makeParticle() {
+      const c = COLORS[Math.floor(Math.random() * COLORS.length)];
+      return { x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.4+0.4,
+               vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
+               alpha: Math.random()*0.4+0.1, color: c };
+    }
+    function init() { resize(); particles = Array.from({length:100}, makeParticle); }
+    function animLoop() {
+      ctx.clearRect(0,0,W,H);
+      for (let i=0; i<particles.length; i++) {
+        const p=particles[i]; p.x+=p.vx; p.y+=p.vy;
+        if (p.x<0||p.x>W||p.y<0||p.y>H) { Object.assign(p,makeParticle()); p.x=Math.random()*W; p.y=Math.random()*H; }
+        for (let j=i+1;j<particles.length;j++) {
+          const q=particles[j]; const dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy);
+          if (d<110) { ctx.beginPath(); ctx.strokeStyle=`rgba(${p.color[0]},${p.color[1]},${p.color[2]},${0.05*(1-d/110)})`; ctx.lineWidth=0.6; ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke(); }
+        }
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=`rgba(${p.color[0]},${p.color[1]},${p.color[2]},${p.alpha})`; ctx.fill();
+      }
+      requestAnimationFrame(animLoop);
+    }
+    window.addEventListener('resize', resize);
+    init(); animLoop();
+
+    const qrImg     = document.getElementById('qr-img');
+    const qrLoading = document.getElementById('qr-loading');
+    const qrError   = document.getElementById('qr-error');
+    const badge     = document.getElementById('status-badge');
+    const statusTxt = document.getElementById('status-text');
+    const btnRefresh = document.getElementById('btn-refresh');
+
+    function setBadge(type, text) {
+      badge.className = 'status-badge ' + type;
+      statusTxt.textContent = text;
+    }
+
+    function loadQR() {
+      qrImg.classList.remove('loaded');
+      qrLoading.classList.remove('hidden');
+      qrError.classList.remove('show');
+      setBadge('loading', 'Generating QR code…');
+      btnRefresh.disabled = true;
+
+      const stamp = Date.now();
+      qrImg.src = '/qr/generate?t=' + stamp;
+
+      qrImg.onload = () => {
+        qrLoading.classList.add('hidden');
+        qrImg.classList.add('loaded');
+        setBadge('ready', 'QR ready — scan now!');
+        btnRefresh.disabled = false;
+
+        setTimeout(() => {
+          setBadge('expired', 'QR expired — refresh to get a new one');
+        }, 55000);
+      };
+
+      qrImg.onerror = () => {
+        qrLoading.classList.add('hidden');
+        qrError.classList.add('show');
+        setBadge('expired', 'Failed to load QR');
+        btnRefresh.disabled = false;
+      };
+    }
+
+    loadQR();
+  </script>
+</body>
+</html>

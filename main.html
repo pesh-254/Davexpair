@@ -273,15 +273,98 @@
       font-weight: 600;
     }
 
+    /* ── Greeting banner ── */
+    .greeting {
+      position: relative;
+      z-index: 2;
+      width: 90%;
+      max-width: 680px;
+      margin-bottom: 1.2rem;
+      padding: 0.85rem 1.4rem;
+      background: rgba(18,18,30,0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .greeting-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .greeting-emoji {
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+
+    .greeting-text {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .greeting-text strong {
+      background: linear-gradient(90deg, var(--blue-light), var(--pink-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 700;
+    }
+
+    .greeting-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .live-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34,197,94,0.7);
+      animation: blink 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    .live-time {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: rgba(232,232,240,0.35);
+      font-variant-numeric: tabular-nums;
+    }
+
     @media (max-width: 560px) {
       .card { padding: 2.2rem 1.4rem 1.8rem; }
       .btn  { width: 100%; max-width: 300px; }
       .buttons { flex-direction: column; align-items: center; }
+      .greeting { padding: 0.7rem 1rem; }
+      .greeting-right { display: none; }
     }
   </style>
 </head>
 <body>
   <canvas id="bg-canvas"></canvas>
+
+  <div class="greeting" id="greeting-bar">
+    <div class="greeting-left">
+      <span class="greeting-emoji" id="greet-emoji">👋</span>
+      <div class="greeting-text">
+        <span id="greet-msg">Welcome</span> &mdash; Ready to generate your <strong>DAVE-X</strong> session?
+      </div>
+    </div>
+    <div class="greeting-right">
+      <span class="live-dot"></span>
+      <span class="live-time" id="live-clock"></span>
+    </div>
+  </div>
 
   <div class="card">
     <div class="logo-row">
@@ -308,7 +391,7 @@
       <button onclick="window.open('/qr')" class="btn btn-secondary">
         <i class="fas fa-qrcode"></i> QR Scan
       </button>
-      <button onclick="window.open('https://github.com')" class="btn btn-ghost">
+      <button onclick="window.open('https://github.com/Davex-254/DAVE-X')" class="btn btn-ghost">
         <i class="fab fa-github"></i> Fork Repo
       </button>
     </div>
@@ -319,6 +402,28 @@
   </div>
 
   <script>
+    // ── Time-based greeting ──
+    (function() {
+      const h = new Date().getHours();
+      let emoji, msg;
+      if (h >= 5 && h < 12)       { emoji = '☀️'; msg = 'Good morning'; }
+      else if (h >= 12 && h < 17) { emoji = '👋'; msg = 'Good afternoon'; }
+      else if (h >= 17 && h < 21) { emoji = '🌆'; msg = 'Good evening'; }
+      else                         { emoji = '🌙'; msg = 'Good night'; }
+      document.getElementById('greet-emoji').textContent = emoji;
+      document.getElementById('greet-msg').textContent   = msg;
+
+      function pad(n) { return String(n).padStart(2, '0'); }
+      function tick() {
+        const now = new Date();
+        const time = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+        const el = document.getElementById('live-clock');
+        if (el) el.textContent = time;
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let W, H, particles = [];

@@ -26,7 +26,11 @@ function removeFile(filePath) {
   }
 }
 
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'qr.html'));
+});
+
+router.get('/generate', async (req, res) => {
   const id = makeid();
   const tempDir = path.join(__dirname, 'temp', id);
 
@@ -49,7 +53,14 @@ router.get('/', async (req, res) => {
 
           if (qr) {
             if (!res.headersSent) {
-              const qrBuffer = await QRCode.toBuffer(qr);
+              const qrBuffer = await QRCode.toBuffer(qr, {
+                type: 'png',
+                width: 400,
+                margin: 2,
+                color: { dark: '#000000', light: '#ffffff' },
+              });
+              res.setHeader('Content-Type', 'image/png');
+              res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
               res.end(qrBuffer);
             }
           }
@@ -138,14 +149,13 @@ router.get('/', async (req, res) => {
           console.error('[QR connection.update error]', err);
           try { await socket.ws.close(); } catch (_) {}
           removeFile(tempDir);
+          if (!res.headersSent) res.status(500).end();
         }
       });
 
     } catch (err) {
       console.error('[QR Session Error]', err);
-      if (!res.headersSent) {
-        res.json({ code: 'Service temporarily unavailable. Please try again.' });
-      }
+      if (!res.headersSent) res.status(500).end();
       removeFile(tempDir);
     }
   }
