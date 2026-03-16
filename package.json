@@ -1,25 +1,24 @@
 {
-    "description": "dave-session",
-    "main": "./voltah.js",
-  "engines" : { 
-    "npm" : ">=9.7.2",
-    "node" : ">=20.0.0"
-    },
-    "scripts": {
-    "start": "node voltah.js"
+  "name": "workspace",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "davr",
-  "license": "GPL-3.0 license",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
   "dependencies": {
-   "@angstvorfrauen/baileys": "*",
-    "qrcode": "^1.5.3",
-    "awesome-phonenumber": "^2.64.0",
-    "pino": "^8.1.0",
-    "phone" : "3.1.30",
-    "body-parser": "^1.20.1",
+    "@whiskeysockets/baileys": "^7.0.0-rc.9",
+    "awesome-phonenumber": "^7.8.0",
+    "body-parser": "^2.2.2",
+    "express": "^5.2.1",
+    "jimp": "^1.6.0",
     "pastebin-js": "^1.0.6",
-    "express": "^4.18.1",
     "path": "^0.12.7",
-    "jimp": "latest"
-   }
+    "phone": "^3.1.71",
+    "pino": "^10.3.1",
+    "qrcode": "^1.5.4"
+  }
 }

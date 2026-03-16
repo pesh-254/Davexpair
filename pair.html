@@ -3,536 +3,513 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dave pairing site Dashboard</title>
+  <title>JUNE-X Pair Code</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-    :root {
-      --primary: linear-gradient(135deg, #FF4500, #228B22);
-      --bg: #D2691E;
-      --glass: rgba(255, 255, 255, 0.05);
-      --text: #ffffff;
-      --muted: #708090;
-      --highlight: #FF1493;
-      --radius: 16px;
-      --blur: 12px;
-      --transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      --glow: 0 0 15px rgba(0, 212, 255, 0.3);
+  <style>
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    :root {
+      --green: #00ffaa;
+      --blue: #0088ff;
+      --purple: #7b2fff;
+      --dark: #020c1b;
+      --card: rgba(8, 22, 46, 0.82);
+      --border: rgba(0, 255, 170, 0.18);
+      --red: #ff3e6c;
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
+      background: var(--dark);
+      font-family: 'Rajdhani', sans-serif;
+      color: #cde8e0;
       overflow-x: hidden;
-      color: var(--text);
-      padding: 80px 20px 120px; /* Space for header and music player */
     }
 
-    /* Background with blur effect */
-    .background-image {
+    #bg-canvas {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -3;
-      filter: blur(8px) brightness(0.6);
-      transform: scale(1.1);
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
     }
 
-    /* Header with logo */
-    .header {
+    .scanlines {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      z-index: 100;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .logo-container {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .logo-img {
-      height: 40px;
-      width: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid rgba(0, 212, 255, 0.3);
-      box-shadow: var(--glow);
-    }
-
-    .logo-text {
-      font-size: 1.5rem;
-      font-weight: 700;
-      background: var(--primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: var(--glow);
-    }
-
-    /* Battery indicator */
-    .battery-container {
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 50px;
-      padding: 0.5rem 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      font-size: 0.9rem;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .battery-icon {
-      color: var(--highlight);
-      font-size: 1.2rem;
-    }
-
-    /* Main container */
-    .main-content {
-      width: 100%;
-      max-width: 500px;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      position: relative;
+      inset: 0;
       z-index: 1;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px, transparent 3px,
+        rgba(0,255,170,0.02) 3px, rgba(0,255,170,0.02) 4px
+      );
     }
 
-    /* Pairing box */
-    .box {
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      border-radius: var(--radius);
-      padding: 2rem;
+    /* ── Card ── */
+    .card {
+      position: relative;
+      z-index: 2;
+      width: 90%;
+      max-width: 460px;
+      padding: 3rem 2.2rem 2rem;
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      box-shadow:
+        0 0 50px rgba(0,255,170,0.07),
+        0 25px 60px rgba(0,0,0,0.65);
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--green), var(--blue), var(--green), var(--purple));
+      background-size: 300% 100%;
+      animation: barShimmer 4s linear infinite;
+    }
+
+    @keyframes barShimmer {
+      0%   { background-position: 0% 0%; }
+      100% { background-position: 300% 0%; }
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 55px; height: 55px;
+      border-bottom: 2px solid rgba(0,255,170,0.2);
+      border-right: 2px solid rgba(0,255,170,0.2);
+      border-radius: 0 0 20px 0;
+    }
+
+    .corner-tl {
+      position: absolute;
+      top: 0; left: 0;
+      width: 55px; height: 55px;
+      border-top: 2px solid rgba(0,255,170,0.2);
+      border-left: 2px solid rgba(0,255,170,0.2);
+      border-radius: 20px 0 0 0;
+      z-index: 3;
+    }
+
+    /* ── Header ── */
+    .header {
       text-align: center;
-      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: var(--transition);
+      margin-bottom: 2rem;
     }
 
-    .box:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), var(--glow);
-    }
-
-    .box h2 {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-      background: var(--primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: var(--glow);
-    }
-
-    .box h5 {
-      color: var(--muted);
-      margin-bottom: 1.5rem;
-      font-weight: normal;
-    }
-
-    /* Input styling */
-    .input-container {
+    .icon-wrap {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--purple), var(--blue));
       display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      color: #fff;
+      margin: 0 auto 1rem;
+      box-shadow: 0 0 24px rgba(123,47,255,0.5);
+      animation: iconPulse 3s ease-in-out infinite;
     }
 
-    .input-container input {
+    @keyframes iconPulse {
+      0%, 100% { box-shadow: 0 0 24px rgba(123,47,255,0.5); }
+      50%       { box-shadow: 0 0 40px rgba(123,47,255,0.8), 0 0 70px rgba(0,136,255,0.3); }
+    }
+
+    .title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      background: linear-gradient(90deg, var(--green), var(--blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      margin-top: 0.5rem;
+      font-size: 0.92rem;
+      color: rgba(205,232,224,0.55);
+      line-height: 1.6;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin-bottom: 1.8rem;
+    }
+
+    /* ── Input group ── */
+    .input-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(205,232,224,0.55);
+      margin-bottom: 0.5rem;
+    }
+
+    .input-group {
+      display: flex;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(0,255,170,0.2);
+      background: rgba(2,12,27,0.6);
+      transition: border-color 0.25s;
+      margin-bottom: 1.2rem;
+    }
+
+    .input-group:focus-within {
+      border-color: var(--green);
+      box-shadow: 0 0 18px rgba(0,255,170,0.15);
+    }
+
+    .input-prefix {
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      font-size: 1rem;
+      color: var(--green);
+      border-right: 1px solid rgba(0,255,170,0.15);
+      background: rgba(0,255,170,0.04);
+    }
+
+    .input-group input {
       flex: 1;
-      padding: 1rem;
-      border-radius: var(--radius);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(0, 0, 0, 0.3);
-      color: var(--text);
-      font-family: inherit;
-      transition: var(--transition);
-    }
-
-    .input-container input:focus {
-      outline: none;
-      border-color: var(--highlight);
-      box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
-    }
-
-    .input-container button {
-      padding: 1rem 1.5rem;
-      background: var(--primary);
-      color: white;
+      padding: 0.9rem 1rem;
+      background: transparent;
       border: none;
-      border-radius: var(--radius);
+      outline: none;
+      color: #e5f5f1;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
       font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
     }
 
-    .input-container button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    .input-group input::placeholder {
+      color: rgba(205,232,224,0.3);
     }
 
-    /* Result display */
-    #pair-result {
-      margin-top: 1.5rem;
+    /* ── Submit button ── */
+    .btn-submit {
+      width: 100%;
       padding: 1rem;
-      border-radius: var(--radius);
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      min-height: 60px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, var(--purple), var(--blue));
+      color: #fff;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 20px rgba(123,47,255,0.35);
+    }
+
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transition: left 0.4s ease;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(123,47,255,0.5);
+    }
+
+    .btn-submit:hover::after {
+      left: 100%;
+    }
+
+    .btn-submit:active {
+      transform: translateY(-1px) scale(0.99);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── Status area ── */
+    .status-wrap {
+      margin-top: 1.4rem;
+      min-height: 56px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    #copy-code {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--highlight);
-      padding: 0.6rem 1.2rem;
-      border-radius: 50px;
-      color: white;
-      cursor: pointer;
-      font-weight: 600;
-      transition: var(--transition);
-      margin-top: 1rem;
-      display: none;
-    }
-
-    #copy-code:hover {
-      background: rgba(0, 212, 255, 0.1);
-      box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
-    }
-
-    /* Music player - Positioned below pairing container */
-    .music-player {
+    /* ── Code display ── */
+    .code-box {
       width: 100%;
-      max-width: 500px;
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      z-index: 90;
+      padding: 1rem 1.4rem;
+      border-radius: 12px;
+      background: rgba(0,255,170,0.05);
+      border: 1px solid rgba(0,255,170,0.2);
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
       text-align: center;
-      margin-top: 2rem;
+      position: relative;
+      overflow: hidden;
     }
 
-    .music-player h3 {
-      color: var(--highlight);
-      margin-bottom: 0.5rem;
-      font-size: 1.2rem;
+    .code-box:hover {
+      background: rgba(0,255,170,0.1);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,255,170,0.15);
     }
 
-    .music-title {
-      font-weight: bold;
-      font-size: 1.1rem;
+    .code-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(205,232,224,0.5);
       margin-bottom: 0.3rem;
     }
 
-    .music-subtitle {
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    .play-btn {
-      background: var(--primary);
-      border: none;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      transition: var(--transition);
-    }
-
-    .play-btn:hover {
-      transform: scale(1.1);
-    }
-
-    .play-btn i {
-      color: white;
+    .code-value {
+      font-family: 'Orbitron', sans-serif;
       font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: var(--green);
+      text-shadow: 0 0 14px rgba(0,255,170,0.7);
+      animation: codeGlow 2s ease-in-out infinite;
     }
 
-    .time-display {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: var(--muted);
+    @keyframes codeGlow {
+      0%, 100% { text-shadow: 0 0 14px rgba(0,255,170,0.7); }
+      50%       { text-shadow: 0 0 28px rgba(0,255,170,1), 0 0 50px rgba(0,255,170,0.4); }
     }
 
-    /* Responsive design */
-    @media (max-width: 768px) {
-      .header {
-        padding: 0.8rem 1rem;
-      }
-      
-      .logo-text {
-        font-size: 1.2rem;
-      }
-      
-      body {
-        padding: 70px 15px 100px;
-      }
-      
-      .input-container {
-        flex-direction: column;
-      }
-      
-      .input-container button {
-        width: 100%;
-      }
-      
-      .music-player {
-        padding: 1rem;
-      }
+    .code-hint {
+      font-size: 0.75rem;
+      color: rgba(205,232,224,0.4);
+      margin-top: 0.3rem;
+    }
+
+    /* ── Error / info messages ── */
+    .msg {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .msg.error {
+      background: rgba(255,62,108,0.1);
+      border: 1px solid rgba(255,62,108,0.25);
+      color: #ff7096;
+    }
+
+    .msg.info {
+      background: rgba(0,136,255,0.08);
+      border: 1px solid rgba(0,136,255,0.2);
+      color: #66aaff;
+    }
+
+    /* ── Spinner ── */
+    .spinner {
+      width: 26px;
+      height: 26px;
+      border: 3px solid rgba(0,255,170,0.2);
+      border-top-color: var(--green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(205,232,224,0.35);
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 2rem 1.2rem 1.6rem; }
     }
   </style>
 </head>
 <body>
-  <!-- Blurred Background Image -->
-  <img src="https://url.bwmxmd.online/Adams.twcferrg.jpg" alt="Trashcore bot Background" class="background-image">
+  <canvas id="bg-canvas"></canvas>
+  <div class="scanlines"></div>
 
-  <!-- Header with Logo -->
-  <header class="header">
-    <div class="logo-container">
-      <img src="https://url.bwmxmd.online/Adams.twcferrg.jpg" alt="Trashcore bot Logo" class="logo-img">
-      <div class="logo-text">𝘿𝙖𝙫𝙚𝘼𝙄-𝐏𝐀𝐈𝐑𝐈𝐍𝐆</div>
-    </div>
-    
-    <!-- Battery Indicator -->
-    <div class="battery-container">
-      <i class="fas fa-battery-full battery-icon" id="battery-icon"></i>
-      <span id="battery-level">--%</span>
-    </div>
-  </header>
+  <div class="card">
+    <div class="corner-tl"></div>
 
-  <!-- Main Content Container -->
-  <div class="main-content">
-    <!-- Pairing Box -->
-    <div class="box">
-      <h2>PAIRING CODE</h2>
-      <h5>DAVE BOTS </h5>
-      <p>Please enter your number without country code</p>
-      
-      <div class="input-container">
-        <input type="number" id="number" placeholder="put your number" required>
-        <button id="submit">REQUEST CODE</button>
-      </div>
-      
-      <div id="pair-result">
-        <p id="waiting-message" style="display: none;">Please wait...</p>
-      </div>
-      
-      <button id="copy-code" onclick="copyCode()">COPY YOUR CODE</button>
+    <div class="header">
+      <div class="icon-wrap"><i class="fas fa-plug"></i></div>
+      <h1 class="title">PAIR CODE</h1>
+      <p class="subtitle">Enter your WhatsApp number with country code<br>to receive a pairing code instantly.</p>
     </div>
 
-    <!-- Music Player - Positioned below pairing container -->
-    <div class="music-player">
-      <h3>PLAY NOW</h3>
-      <div class="music-title">PLAY SONG</div>
-      <div class="music-subtitle">by Dave mds devs</div>
-      <button class="play-btn" onclick="togglePlay()">
-        <i class="fas fa-pause" id="play-icon"></i>
-      </button>
-      <div class="time-display" id="time1">0:00</div>
-      <div class="music-subtitle">PAIRING SONG</div>
-      <audio id="audio1" src="https://url.bwmxmd.online/Adams.ioeeyulj.m4a" loop></audio>
+    <div class="divider"></div>
+
+    <p class="input-label"><i class="fas fa-phone-alt" style="margin-right:6px;color:var(--green)"></i>Phone Number</p>
+    <div class="input-group">
+      <span class="input-prefix"><i class="fas fa-hashtag"></i></span>
+      <input type="tel" id="phone" placeholder="254712345678" inputmode="numeric">
+    </div>
+
+    <button class="btn-submit" id="submit-btn">
+      <i class="fas fa-paper-plane" style="margin-right:8px"></i>Get Pair Code
+    </button>
+
+    <div class="status-wrap" id="status"></div>
+
+    <div class="footer">
+      JUNE-X &copy; 2025 &mdash; Secure WhatsApp Session Generator
     </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
   <script>
-    // DOM elements
-    const pairResult = document.getElementById("pair-result");
-    const submitBtn = document.getElementById("submit");
-    const numberInput = document.getElementById("number");
-    const copyCodeBtn = document.getElementById("copy-code");
-    const waitingMessage = document.getElementById("waiting-message");
-    const batteryLevel = document.getElementById("battery-level");
-    const batteryIcon = document.getElementById("battery-icon");
+    // ── Particle canvas ──
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
 
-    // Copy code function
-    async function copyCode() {
-      const code = pairResult.innerText.replace('CODE: ', '');
-      try {
-        await navigator.clipboard.writeText(code);
-        copyCodeBtn.innerText = "COPIED!";
-        copyCodeBtn.style.backgroundColor = "#00ff00";
-        copyCodeBtn.style.color = "#000";
-        setTimeout(() => {
-          copyCodeBtn.innerText = "COPY CODE";
-          copyCodeBtn.style.backgroundColor = "";
-          copyCodeBtn.style.color = "";
-        }, 2000);
-      } catch (err) {
-        console.error('Failed to copy: ', err);
+    function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+
+    function Particle() { this.reset(); }
+    Particle.prototype.reset = function() {
+      this.x = Math.random() * W; this.y = Math.random() * H;
+      this.r = Math.random() * 1.2 + 0.3;
+      this.vx = (Math.random() - 0.5) * 0.35; this.vy = (Math.random() - 0.5) * 0.35;
+      this.alpha = Math.random() * 0.4 + 0.1;
+      this.color = ['#00ffaa','#0088ff','#7b2fff'][Math.floor(Math.random()*3)];
+    };
+    Particle.prototype.update = function() {
+      this.x += this.vx; this.y += this.vy;
+      if (this.x<0||this.x>W||this.y<0||this.y>H) this.reset();
+    };
+
+    function init() { resize(); particles = Array.from({length:100}, ()=>new Particle()); }
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      for (let i=0;i<particles.length;i++) {
+        for (let j=i+1;j<particles.length;j++) {
+          const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+          const d=Math.sqrt(dx*dx+dy*dy);
+          if (d<110) {
+            ctx.beginPath();
+            ctx.strokeStyle=`rgba(0,255,170,${0.07*(1-d/110)})`;
+            ctx.lineWidth=0.5;
+            ctx.moveTo(particles[i].x,particles[i].y);
+            ctx.lineTo(particles[j].x,particles[j].y);
+            ctx.stroke();
+          }
+        }
       }
+      particles.forEach(p=>{
+        p.update();
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=p.color; ctx.globalAlpha=p.alpha; ctx.fill(); ctx.globalAlpha=1;
+      });
+      requestAnimationFrame(draw);
+    }
+    window.addEventListener('resize', resize);
+    init(); draw();
+
+    // ── Pair code logic ──
+    const phoneInput = document.getElementById('phone');
+    const submitBtn  = document.getElementById('submit-btn');
+    const statusEl   = document.getElementById('status');
+
+    function setStatus(html) { statusEl.innerHTML = html; }
+
+    async function copyCode(rawCode) {
+      try {
+        await navigator.clipboard.writeText(rawCode);
+        setStatus(`
+          <div class="code-box">
+            <div class="code-label">Pair Code &mdash; Copied!</div>
+            <div class="code-value">${rawCode}</div>
+            <div class="code-hint"><i class="fas fa-check-circle" style="color:var(--green)"></i> Copied to clipboard</div>
+          </div>`);
+        setTimeout(() => renderCode(rawCode), 1500);
+      } catch (_) {}
     }
 
-    // Submit handler
-    submitBtn.addEventListener("click", async (e) => {
-      e.preventDefault();
-      
-      if (!numberInput.value) {
-        pairResult.innerHTML = '<p style="color:var(--highlight)">Enter your WhatsApp number without Country Code</p>';
-        return;
+    function renderCode(code) {
+      setStatus(`
+        <div class="code-box" onclick="copyCode('${code}')">
+          <div class="code-label">Your Pair Code &mdash; tap to copy</div>
+          <div class="code-value">${code}</div>
+          <div class="code-hint"><i class="fas fa-copy" style="margin-right:4px"></i>Tap to copy</div>
+        </div>`);
+    }
+
+    submitBtn.addEventListener('click', async () => {
+      const raw = phoneInput.value.replace(/[^0-9]/g, '');
+
+      if (!raw) {
+        return setStatus('<div class="msg error"><i class="fas fa-exclamation-circle" style="margin-right:6px"></i>Enter your WhatsApp number with country code.</div>');
       }
-      
-      const cleanNumber = numberInput.value.replace(/[^0-9]/g, "");
-      
-      if (cleanNumber.length < 11) {
-        pairResult.innerHTML = '<p style="color:#ff5555">Invalid Number</p>';
-        return;
+      if (raw.length < 10) {
+        return setStatus('<div class="msg error"><i class="fas fa-exclamation-circle" style="margin-right:6px"></i>Number seems too short. Include country code.</div>');
       }
-      
-      // Format number display
-      let formattedNumber = "";
-      const digits = cleanNumber.split('');
-      digits.forEach((digit, index) => {
-        formattedNumber += digit;
-        if (index === 2 || index === 7) {
-          formattedNumber += " ";
-        }
-      });
-      
-      numberInput.type = "text";
-      numberInput.value = "+" + formattedNumber;
-      numberInput.style.color = "var(--highlight)";
-      
-      waitingMessage.style.display = "block";
-      pairResult.innerHTML = "";
-      copyCodeBtn.style.display = "none";
-      
+
+      submitBtn.disabled = true;
+      setStatus('<div class="spinner"></div>');
+
       try {
-        const { data } = await axios(`/code?number=${cleanNumber}`);
-        const code = data.code || "Service Unavailable";
-        
-        pairResult.innerHTML = `
-          <p style="color:var(--highlight); font-weight:bold; font-size:1.2rem;">
-            CODE: <span style="color:white">${code}</span>
-          </p>
-        `;
-        copyCodeBtn.style.display = "inline-block";
-        waitingMessage.style.display = "none";
-      } catch (error) {
-        pairResult.innerHTML = '<p style="color:#ff5555">Error getting pairing code</p>';
-        waitingMessage.style.display = "none";
+        const { data } = await axios(`/code?number=${raw}`);
+        const code = data.code || 'Unavailable';
+        if (code.toLowerCase().includes('unavailable')) {
+          setStatus('<div class="msg error"><i class="fas fa-times-circle" style="margin-right:6px"></i>Service temporarily unavailable. Please retry.</div>');
+        } else {
+          renderCode(code);
+        }
+      } catch (_) {
+        setStatus('<div class="msg error"><i class="fas fa-times-circle" style="margin-right:6px"></i>Request failed. Check your connection and retry.</div>');
+      } finally {
+        submitBtn.disabled = false;
       }
     });
 
-    // Music player controls
-    const audio = document.getElementById('audio1');
-    const playBtn = document.querySelector('.play-btn');
-    const playIcon = document.getElementById('play-icon');
-    const timeDisplay = document.getElementById('time1');
-    
-    // Auto-play music when page loads (with user interaction)
-    document.addEventListener('click', function initAudio() {
-      audio.play().then(() => {
-        playIcon.classList.replace('fa-play', 'fa-pause');
-        updateTimeDisplay();
-      }).catch(error => {
-        console.log('Auto-play prevented:', error);
-      });
-      document.removeEventListener('click', initAudio);
-    }, { once: true });
-
-    function togglePlay() {
-      if (audio.paused) {
-        audio.play();
-        playIcon.classList.replace('fa-play', 'fa-pause');
-      } else {
-        audio.pause();
-        playIcon.classList.replace('fa-pause', 'fa-play');
-      }
-    }
-
-    function updateTimeDisplay() {
-      const minutes = Math.floor(audio.currentTime / 60);
-      const seconds = Math.floor(audio.currentTime % 60);
-      timeDisplay.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
-      
-      if (!audio.paused) {
-        requestAnimationFrame(updateTimeDisplay);
-      }
-    }
-
-    audio.addEventListener('timeupdate', updateTimeDisplay);
-
-    // Battery status indicator
-    async function updateBattery() {
-      if (navigator.getBattery) {
-        try {
-          const battery = await navigator.getBattery();
-          
-          const updateBatteryUI = () => {
-            const batteryPercent = Math.round(battery.level * 100);
-            batteryLevel.textContent = `${batteryPercent}%`;
-            
-            // Update battery icon based on level
-            let iconClass = 'fa-battery-empty';
-            if (batteryPercent > 80) iconClass = 'fa-battery-full';
-            else if (batteryPercent > 60) iconClass = 'fa-battery-three-quarters';
-            else if (batteryPercent > 40) iconClass = 'fa-battery-half';
-            else if (batteryPercent > 20) iconClass = 'fa-battery-quarter';
-            
-            // Add charging bolt if charging
-            if (battery.charging) {
-              batteryIcon.className = `fas fa-bolt ${iconClass}`;
-              batteryIcon.style.color = '#00ff00';
-            } else {
-              batteryIcon.className = `fas ${iconClass}`;
-              batteryIcon.style.color = 'var(--highlight)';
-            }
-          };
-          
-          battery.addEventListener('levelchange', updateBatteryUI);
-          battery.addEventListener('chargingchange', updateBatteryUI);
-          updateBatteryUI();
-        } catch (error) {
-          console.error('Battery API error:', error);
-        }
-      } else {
-        batteryLevel.textContent = "N/A";
-      }
-    }
-
-    // Initialize
-    window.addEventListener('load', () => {
-      copyCodeBtn.style.display = "none";
-      updateBattery();
-      
-      // Smooth page load
-      document.body.style.opacity = '0';
-      setTimeout(() => {
-        document.body.style.transition = 'opacity 0.5s ease';
-        document.body.style.opacity = '1';
-      }, 100);
+    phoneInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') submitBtn.click();
     });
   </script>
 </body>
-  </html>
+</html>

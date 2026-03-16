@@ -1,9 +1,9 @@
 {
-    "name": "dave session",
+    "name": "Trash session",
     "description": "a session generator for Trashcore-bot",
     "logo": "https://files.catbox.moe/2wj395.jpg",
     "repository": "https://github.com/Tennor-modz/trashcore-sytem",
-    "keywords": ["Dave-Ai BOT"],
+    "keywords": ["Trashcore-MD BOT"],
     "success_url": "/", 
     "buildpacks": [{ "url": "https://github.com/heroku/heroku-buildpack-nodejs#latest" } ],
     "env": {      

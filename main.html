@@ -1,507 +1,440 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Digitex Xmd Bot" />
-  <title>DAVE/VENOM/DAVEAI SESSION PAIR</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-<style>
-    :root {
-      --primary: linear-gradient(135deg, #1E90FF, #800000);
-      --bg: #000000;
-      --glass: rgba(255, 255, 255, 0.05);
-      --text: #ffffff;
-      --muted: #228B22;
-      --highlight: #696969;
-      --radius: 16px;
-      --blur: 12px;
-      --transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      --glow: 0 0 15px rgba(0, 212, 255, 0.3);
-    }
-
+  <meta charset="UTF-8">
+  <title>JUNE-X SESSION</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
     *, *::before, *::after {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --green: #00ffaa;
+      --blue: #0088ff;
+      --purple: #8800ff;
+      --dark: #020c1b;
+      --card: rgba(8, 22, 46, 0.75);
+      --border: rgba(0, 255, 170, 0.18);
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
     }
 
     body {
-      font-family: 'JetBrains Mono', monospace;
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      line-height: 1.6;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5rem 3rem;
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .logo {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      background: var(--primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: var(--glow);
-    }
-
-    .status {
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    .status-item {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 0.6rem 1.2rem;
-      border-radius: 50px;
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      font-size: 0.9rem;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: var(--transition);
-    }
-
-    .status-item:hover {
-      background: rgba(0, 212, 255, 0.1);
-      border-color: var(--highlight);
-    }
-
-    .status-item i {
-      color: var(--highlight);
-    }
-
-    main {
-      flex: 1;
-      padding: 3rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2.5rem;
+      justify-content: center;
+      background: var(--dark);
+      font-family: 'Rajdhani', sans-serif;
+      color: #cde8e0;
+      overflow-x: hidden;
     }
 
-    .tools {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-      width: 100%;
-      max-width: 1200px;
+    /* ── Canvas BG ── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
     }
 
-    .tool {
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      border-radius: var(--radius);
-      padding: 2rem;
-      text-align: center;
-      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
-      transition: var(--transition);
-      cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+    /* ── Scanlines ── */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0, 255, 170, 0.025) 3px,
+        rgba(0, 255, 170, 0.025) 4px
+      );
+    }
+
+    /* ── Card ── */
+    .card {
       position: relative;
+      z-index: 2;
+      width: 90%;
+      max-width: 720px;
+      padding: 3rem 2.5rem 2rem;
+      background: var(--card);
+      backdrop-filter: blur(18px);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      box-shadow:
+        0 0 40px rgba(0,255,170,0.08),
+        0 20px 60px rgba(0,0,0,0.6);
       overflow: hidden;
     }
 
-    .tool::before {
+    /* top accent bar */
+    .card::before {
       content: '';
       position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
-      opacity: 0;
-      transition: var(--transition);
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--green), var(--blue), var(--green), var(--purple));
+      background-size: 300% 100%;
+      animation: barShimmer 4s linear infinite;
     }
 
-    .tool:hover {
-      transform: translateY(-8px);
-      background: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), var(--glow);
-      border-color: rgba(0, 212, 255, 0.2);
+    @keyframes barShimmer {
+      0%   { background-position: 0% 0%; }
+      100% { background-position: 300% 0%; }
     }
 
-    .tool:hover::before {
-      opacity: 1;
+    /* corner brackets */
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 60px; height: 60px;
+      border-bottom: 2px solid rgba(0,255,170,0.25);
+      border-right: 2px solid rgba(0,255,170,0.25);
+      border-radius: 0 0 20px 0;
     }
 
-    .tool i {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      display: block;
-      background: var(--primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      transition: var(--transition);
+    .corner-tl {
+      position: absolute;
+      top: 0; left: 0;
+      width: 60px; height: 60px;
+      border-top: 2px solid rgba(0,255,170,0.25);
+      border-left: 2px solid rgba(0,255,170,0.25);
+      border-radius: 20px 0 0 0;
+      z-index: 3;
     }
 
-    .tool h3 {
+    /* ── Logo / Title ── */
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 0.4rem;
+    }
+
+    .logo-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--green), var(--blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #020c1b;
+      box-shadow: 0 0 20px rgba(0,255,170,0.4);
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes logoPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(0,255,170,0.4); }
+      50%       { box-shadow: 0 0 35px rgba(0,255,170,0.7), 0 0 60px rgba(0,136,255,0.3); }
+    }
+
+    .title {
       font-family: 'Orbitron', sans-serif;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      letter-spacing: 1px;
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .note {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-top: 1rem;
-      text-align: center;
-      max-width: 800px;
-      padding: 1rem;
-      border-radius: var(--radius);
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .note a {
-      color: var(--highlight);
-      text-decoration: none;
-      font-weight: 600;
-      transition: var(--transition);
-    }
-
-    .note a:hover {
-      text-shadow: 0 0 10px var(--highlight);
-    }
-
-    .music-player {
-      width: 100%;
-      max-width: 1000px;
-      background: var(--glass);
-      border-radius: var(--radius);
-      padding: 2rem;
-      backdrop-filter: blur(var(--blur));
-      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .music-player h2 {
-      font-family: 'Orbitron', sans-serif;
-      margin-bottom: 1.5rem;
-      letter-spacing: 1px;
-      background: var(--primary);
+      font-size: clamp(1.6rem, 5vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: 4px;
+      background: linear-gradient(90deg, var(--green) 0%, var(--blue) 50%, var(--green) 100%);
+      background-size: 200% 100%;
       -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+      animation: titleFlow 5s linear infinite;
+    }
+
+    @keyframes titleFlow {
+      0%   { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
+
+    .badge {
       display: inline-block;
+      background: rgba(0,255,170,0.12);
+      border: 1px solid rgba(0,255,170,0.3);
+      border-radius: 100px;
+      padding: 4px 14px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--green);
+      text-transform: uppercase;
+      margin: 0.8rem auto 2rem;
+      text-align: center;
+      display: table;
     }
 
-    .track {
+    /* ── Divider ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin-bottom: 2rem;
+    }
+
+    /* ── Subtitle ── */
+    .subtitle {
+      text-align: center;
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: rgba(205, 232, 224, 0.7);
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+
+    /* ── Buttons ── */
+    .buttons {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 1.2rem;
-      border-radius: var(--radius);
-      margin-bottom: 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      transition: var(--transition);
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.2rem;
+      width: 100%;
     }
 
-    .track:hover {
-      background: rgba(0, 0, 0, 0.4);
-      border-color: rgba(0, 212, 255, 0.2);
-    }
-
-    .progress {
-      width: 300px;
-      height: 6px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 3px;
+    .btn {
+      position: relative;
+      width: 200px;
+      padding: 1rem 1.4rem;
+      border-radius: 12px;
+      border: 1px solid rgba(0,255,170,0.25);
+      background: rgba(0,255,170,0.06);
+      color: #cde8e0;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
       overflow: hidden;
-      position: relative;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     }
 
-    .progress-fill {
-      width: 0%;
-      background: linear-gradient(90deg, #FF4500, #000000);
-      height: 100%;
-      transition: width 0.1s linear;
-      position: relative;
+    .btn i {
+      margin-right: 8px;
     }
 
-    .progress-fill::after {
-      content: '';
+    .btn .btn-glow {
       position: absolute;
-      right: 0;
-      top: -2px;
-      width: 10px;
-      height: 10px;
-      background: white;
-      border-radius: 50%;
-      transform: translateX(50%);
+      inset: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--green), var(--blue));
       opacity: 0;
-      transition: opacity 0.2s;
+      transition: opacity 0.3s ease;
+      z-index: -1;
     }
 
-    .track:hover .progress-fill::after {
+    .btn:hover {
+      transform: translateY(-4px);
+      border-color: var(--green);
+      box-shadow: 0 8px 28px rgba(0,255,170,0.25);
+      color: #020c1b;
+    }
+
+    .btn:hover .btn-glow {
       opacity: 1;
     }
 
-    button {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--highlight);
-      padding: 0.6rem 1.2rem;
-      border-radius: 50px;
-      color: white;
-      cursor: pointer;
-      font-weight: 600;
-      font-family: 'JetBrains Mono', monospace;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    .btn:active {
+      transform: translateY(-2px) scale(0.98);
     }
 
-    button:hover {
-      background: rgba(0, 212, 255, 0.1);
-      box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
-      transform: scale(1.05);
+    .btn.pulse {
+      animation: btnPulse 2.5s ease-in-out infinite;
     }
 
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
+    @keyframes btnPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,170,0.35); }
+      50%       { box-shadow: 0 0 0 8px rgba(0,255,170,0); }
     }
 
-    .time {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
-      color: var(--muted);
-      min-width: 50px;
+    /* ── Footer ── */
+    .footer {
+      margin-top: 2.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border);
       text-align: center;
+      font-size: 0.82rem;
+      color: rgba(205, 232, 224, 0.45);
+      letter-spacing: 1px;
     }
 
-    @media (max-width: 768px) {
-      header {
-        padding: 1rem 1.5rem;
-        flex-direction: column;
-        gap: 1rem;
-      }
+    .footer span {
+      color: var(--green);
+    }
 
-      main {
-        padding: 1.5rem;
+    /* ── Responsive ── */
+    @media (max-width: 560px) {
+      .card {
+        padding: 2.2rem 1.4rem 1.6rem;
       }
-
-      .tools {
-        grid-template-columns: 1fr;
-      }
-
-      .track {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-      }
-
-      .progress {
+      .btn {
         width: 100%;
+        max-width: 300px;
       }
-
-      .controls {
-        width: 100%;
-        justify-content: space-between;
+      .buttons {
+        flex-direction: column;
+        align-items: center;
       }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">Dave</div>
-    <div class="status">
-      <div class="status-item"><i class="fas fa-bolt"></i> <span id="battery">--%</span></div>
-      <div class="status-item"><i class="fas fa-wifi"></i> <span id="ip">Loading...</span></div>
-    </div>
-  </header>
+  <canvas id="bg-canvas"></canvas>
+  <div class="scanlines"></div>
 
-  <main>
-    <div class="tools">
-      <div class="tool" onclick="window.open(`/pair`)">
-        <i class="fas fa-link"></i>
-        <h3>PAIR CODE</h3>
-        <p class="muted">Connect to WhatsApp by pairing your code</p>
-      </div>
-      <div class="tool" onclick="window.open(`/frediqr`)">
-        <i class="fas fa-qrcode"></i>
-        <h3>QR CODE</h3>
-        <p class="muted">Alternative connection with scanning your device</p>
-      </div>
-      <div class="tool" onclick="window.open(`https://github.com/giftdee/DAVE-MD`)">
-        <i class="fab fa-github"></i>
-        <h3>Open DAVE-MD Repo</h3>
-        <p class="muted">Bot Repo</p>
-      </div>
-      <div class="tool" onclick="window.open(`https://davedigitalsolutions.com`)">
-        <i class="fab fa-page"></i>
-        <h3>Support Owner Wycliffe Host Website Page by using</h3>
-        <p class="muted">Host Website</p>
-      </div>
-      <div class="tool" onclick="window.open(`https://wa.me/254104260236?text=hellow sir`)">
-        <i class="fas fa-headset"></i>
-        <h3>CONTACT OWNER</h3>
-        <p class="muted">Developer and Support your project</p>
-      </div>
-      <div class="tool" onclick="window.open(`https://whatsapp.com/channel/0029VbApvFQ2Jl84lhONkc3k`)">
-        <i class="fas fa-broadcast-tower"></i>
-        <h3>WA CHANNEL</h3>
-        <p class="muted">Get all Bots Update and New Script here</p>
-      </div>
+  <div class="card">
+    <div class="corner-tl"></div>
+
+    <div class="logo-wrap">
+      <div class="logo-icon"><i class="fas fa-robot"></i></div>
+      <h1 class="title">JUNE-X</h1>
     </div>
 
-    <div class="note">
-      If you encounter any issues, please contact the developer for support.🤝
+    <div class="badge">Session Generator</div>
+    <div class="divider"></div>
+
+    <p class="subtitle">
+      Generate a secure WhatsApp session ID for your bot.<br>
+      Choose your preferred authentication method below.
+    </p>
+
+    <div class="buttons">
+      <button onclick="window.open('/pair')" class="btn pulse">
+        <span class="btn-glow"></span>
+        <i class="fas fa-link"></i> Pair Code
+      </button>
+      <button onclick="window.open('/qr')" class="btn">
+        <span class="btn-glow"></span>
+        <i class="fas fa-qrcode"></i> QR Scan
+      </button>
+      <button onclick="window.open('https://github.com/vinpink2/JUNE-X/fork')" class="btn">
+        <span class="btn-glow"></span>
+        <i class="fab fa-github"></i> Fork Repo
+      </button>
     </div>
 
-    <div class="music-player">
-      <h2>NOW PLAYING</h2>
-      <div class="track">
-        <div>
-          <strong>Dave Song</strong>
-          <div class="muted">Dev Dave</div>
-        </div>
-        <div class="controls">
-          <button onclick="togglePlay('audio1')"><i class="fas fa-play"></i> PLAY</button>
-          <div class="progress"><div class="progress-fill" id="progress1"></div></div>
-          <span class="time" id="time1">0:00</span>
-        </div>
-        <audio id="audio1" src="https://files.catbox.moe/tkjzh7.m4a"></audio>
-      </div>
+    <div class="footer">
+      JUNE-X &copy; 2025 &mdash; <span>Secure</span> &bull; <span>Fast</span> &bull; <span>Open Source</span>
     </div>
-  </main>
+  </div>
+
   <script>
-    // Smooth animations
-    document.addEventListener('DOMContentLoaded', () => {
-      document.body.style.opacity = '0';
-      setTimeout(() => {
-        document.body.style.transition = 'opacity 0.5s ease';
-        document.body.style.opacity = '1';
-      }, 100);
-    });
+    // Spiral glow canvas background
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, t = 0;
 
-    // Update clock in title
-    const updateTime = () => {
-      const update = () => {
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
-        document.title = `DAVE MD | ${timeStr}`;
-      };
-      update();
-      setInterval(update, 1000);
+    const SPIRALS = [
+      { arms: 3, speed: 0.0018, radius: 0.42, hue: 160, hueShift: 40,  width: 1.8, alpha: 0.55, dir:  1 },
+      { arms: 4, speed: 0.0012, radius: 0.36, hue: 200, hueShift: 50,  width: 1.4, alpha: 0.45, dir: -1 },
+      { arms: 2, speed: 0.0025, radius: 0.28, hue: 270, hueShift: 60,  width: 1.2, alpha: 0.38, dir:  1 },
+      { arms: 5, speed: 0.0010, radius: 0.50, hue: 180, hueShift: 30,  width: 0.9, alpha: 0.28, dir: -1 },
+    ];
+
+    const GLOWS = [
+      { ox: -0.25, oy: -0.22, r: 0.32, color: [0, 255, 170],   alpha: 0.18 },
+      { ox:  0.28, oy:  0.20, r: 0.28, color: [0, 136, 255],   alpha: 0.16 },
+      { ox:  0.00, oy:  0.00, r: 0.20, color: [123, 47, 255],  alpha: 0.22 },
+      { ox: -0.30, oy:  0.28, r: 0.22, color: [0, 210, 255],   alpha: 0.12 },
+      { ox:  0.32, oy: -0.25, r: 0.24, color: [0, 255, 130],   alpha: 0.13 },
+    ];
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
     }
 
-    // Battery status
-    const updateBattery = async () => {
-      if (navigator.getBattery) {
-        try {
-          const battery = await navigator.getBattery();
-          const setBattery = () => {
-            const batteryPercent = Math.round(battery.level * 100);
-            const batteryElement = document.getElementById('battery');
-            batteryElement.innerText = `${batteryPercent}%`;
-
-            // Add battery icon based on level
-            let batteryIcon = 'fa-bolt';
-            if (batteryPercent <= 20) batteryIcon = 'fa-battery-quarter';
-            else if (batteryPercent <= 50) batteryIcon = 'fa-battery-half';
-            else if (batteryPercent <= 80) batteryIcon = 'fa-battery-three-quarters';
-            else if (batteryPercent <= 100) batteryIcon = 'fa-battery-full';
-
-            batteryElement.previousElementSibling.className = `fas ${batteryIcon}`;
-          };
-
-          battery.addEventListener('levelchange', setBattery);
-          battery.addEventListener('chargingchange', setBattery);
-          setBattery();
-        } catch (error) {
-          console.error('Battery API error:', error);
-        }
-      }
-    }
-
-    // Music player controls
-    const togglePlay = (id) => {
-      const audio = document.getElementById(id);
-      const progress = document.getElementById('progress1');
-      const time = document.getElementById('time1');
-      const button = document.querySelector('button[onclick*="'+id+'"]');
-
-      if (audio.paused) {
-        audio.play();
-        button.innerHTML = '<i class="fas fa-pause"></i> PAUSE';
-
-        audio.ontimeupdate = () => {
-          const percent = (audio.currentTime / audio.duration) * 100;
-          progress.style.width = percent + '%';
-
-          const minutes = Math.floor(audio.currentTime / 60);
-          const seconds = Math.floor(audio.currentTime % 60);
-          time.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
-        };
-
-        audio.onended = () => {
-          progress.style.width = '0%';
-          time.textContent = '0:00';
-          button.innerHTML = '<i class="fas fa-play"></i> PLAY';
-        };
-      } else {
-        audio.pause();
-        button.innerHTML = '<i class="fas fa-play"></i> PLAY';
-      }
-    }
-
-    // IP address fetch
-    const fetchIP = async () => {
-      try {
-        const res = await fetch('https://api.ipify.org?format=json');
-        const data = await res.json();
-        document.getElementById('ip').textContent = data.ip;
-      } catch {
-        document.getElementById('ip').textContent = 'Offline';
-      }
-    }
-
-    // Tool hover effects
-    const setupToolHover = () => {
-      const tools = document.querySelectorAll('.tool');
-      tools.forEach(tool => {
-        tool.addEventListener('mouseenter', () => {
-          tool.style.transform = 'translateY(-8px)';
-        });
-        tool.addEventListener('mouseleave', () => {
-          tool.style.transform = 'translateY(0)';
-        });
+    function drawGlows() {
+      const cx = W / 2, cy = H / 2;
+      const base = Math.min(W, H);
+      GLOWS.forEach((g, i) => {
+        const pulse = 0.85 + 0.15 * Math.sin(t * 0.8 + i * 1.3);
+        const gr = ctx.createRadialGradient(
+          cx + g.ox * base, cy + g.oy * base, 0,
+          cx + g.ox * base, cy + g.oy * base, g.r * base * pulse
+        );
+        const [r, gg, b] = g.color;
+        gr.addColorStop(0,   `rgba(${r},${gg},${b},${g.alpha * pulse})`);
+        gr.addColorStop(0.5, `rgba(${r},${gg},${b},${g.alpha * 0.4 * pulse})`);
+        gr.addColorStop(1,   `rgba(${r},${gg},${b},0)`);
+        ctx.fillStyle = gr;
+        ctx.beginPath();
+        ctx.ellipse(
+          cx + g.ox * base, cy + g.oy * base,
+          g.r * base * pulse, g.r * base * 0.85 * pulse,
+          i * 0.6, 0, Math.PI * 2
+        );
+        ctx.fill();
       });
     }
 
-    // Initialize everything
-    const init = () => {
-      updateTime();
-      updateBattery();
-      fetchIP();
-      setupToolHover();
-    };
+    function drawSpiral(s, offset) {
+      const cx = W / 2, cy = H / 2;
+      const maxR = Math.min(W, H) * s.radius;
+      const turns = 4.5;
+      const steps = 320;
 
-    window.addEventListener('load', init);
+      for (let arm = 0; arm < s.arms; arm++) {
+        const armAngle = (Math.PI * 2 / s.arms) * arm;
+
+        ctx.beginPath();
+        let first = true;
+
+        for (let i = 0; i <= steps; i++) {
+          const frac  = i / steps;
+          const angle = frac * turns * Math.PI * 2 * s.dir + armAngle + offset;
+          const r     = frac * maxR;
+          const x     = cx + Math.cos(angle) * r;
+          const y     = cy + Math.sin(angle) * r;
+
+          if (first) { ctx.moveTo(x, y); first = false; }
+          else ctx.lineTo(x, y);
+        }
+
+        const hue  = (s.hue + arm * (360 / s.arms) + t * 30) % 360;
+        const hue2 = (hue + s.hueShift) % 360;
+
+        ctx.shadowBlur  = 18;
+        ctx.shadowColor = `hsla(${hue},100%,65%,0.6)`;
+        ctx.strokeStyle = `hsla(${hue2},100%,70%,${s.alpha})`;
+        ctx.lineWidth   = s.width;
+        ctx.stroke();
+        ctx.shadowBlur  = 0;
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+
+      drawGlows();
+
+      const time = t;
+      SPIRALS.forEach((s, i) => {
+        drawSpiral(s, time * s.speed * Math.PI * 2 * 1000 + i);
+      });
+
+      t += 0.012;
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    draw();
   </script>
 </body>
-  </html>
+</html>

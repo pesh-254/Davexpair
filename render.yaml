@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: dave
+    env: docker
+    region: Frankfurt
+    plan: free
+

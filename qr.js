@@ -1,87 +1,129 @@
-const PastebinAPI = require('pastebin-js'),
-pastebin = new PastebinAPI('EMWTMkQAVfJa9kM-MRUrxd5Oku1U7pgL')
-const {makeid} = require('./id');
+const { makeid, SESSION_PREFIX } = require('./id');
 const QRCode = require('qrcode');
 const express = require('express');
-const path = require('path');
 const fs = require('fs');
-let router = express.Router()
-const pino = require("pino");
+const path = require('path');
+const pino = require('pino');
 const {
-        default: RavenConnect,
-        useMultiFileAuthState,
-        jidNormalizedUser,
-        Browsers,
-        delay,
-        makeInMemoryStore,
-} = require("@whiskeysockets/baileys");
+  default: makeWASocket,
+  useMultiFileAuthState,
+  Browsers,
+  delay,
+} = require('@whiskeysockets/baileys');
 
-function removeFile(FilePath) {
-        if (!fs.existsSync(FilePath)) return false;
-        fs.rmSync(FilePath, {
-                recursive: true,
-                force: true
-        })
-};
-const {
-        readFile
-} = require("node:fs/promises")
+const router = express.Router();
+
+function removeFile(filePath) {
+  try {
+    if (!fs.existsSync(filePath)) return;
+    fs.rmSync(filePath, { recursive: true, force: true });
+  } catch (e) {
+    console.error('[removeFile]', e.message);
+  }
+}
+
 router.get('/', async (req, res) => {
-        const id = makeid();
-        async function RAVEN() {
-                const {
-                        state,
-                        saveCreds
-                } = await useMultiFileAuthState('./temp/' + id)
-                try {
-                        let client = RavenConnect({
-                                auth: state,
-                                printQRInTerminal: false,
-                                logger: pino({
-                                        level: "silent"
-                                }),
-                                browser: Browsers.macOS("Desktop"),
-                        });
+  const id = makeid();
+  const tempDir = path.join(__dirname, 'temp', id);
 
-                        client.ev.on('creds.update', saveCreds)
-                        client.ev.on("connection.update", async (s) => {
-                                const {
-                                        connection,
-                                        lastDisconnect,
-                                        qr
-                                } = s;
-                                if (qr) await res.end(await QRCode.toBuffer(qr));
-                                if (connection == "open") {
-                                await client.sendMessage(client.user.id, { text: 'Generating your session_id..wait a moment' });
-                                        await delay(50000);
-                                        let data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);
-                                        await delay(8000);
-                                   let b64data = Buffer.from(data).toString('base64');
-                                   let session = await client.sendMessage(client.user.id, { text: 'dave~' + b64data });
+  async function startQRSession() {
+    const { state, saveCreds } = await useMultiFileAuthState(tempDir);
 
-let Textt = `┏━━━❑\n┃🔹 Owner: dave\n┃🔹 Type: Base64\n┃🔹 Status: Active\n┗━━━❒`
+    try {
+      const socket = makeWASocket({
+        auth: state,
+        printQRInTerminal: false,
+        logger: pino({ level: 'silent' }),
+        browser: Browsers.macOS('Desktop'),
+      });
 
-                        await client.sendMessage(client.user.id,{ text: Textt }, {quoted: session })
+      socket.ev.on('creds.update', saveCreds);
 
+      socket.ev.on('connection.update', async (update) => {
+        try {
+          const { connection, lastDisconnect, qr } = update;
 
-                                        await delay(100);
-                                        await client.ws.close();
-                                        return await removeFile("temp/" + id);
-                                } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
-                                        await delay(10000);
-                                        RAVEN();
-                                }
-                        });
-                } catch (err) {
-                        if (!res.headersSent) {
-                                await res.json({
-                                        code: "Service is Currently Unavailable"
-                                });
-                        }
-                        console.log(err);
-                        await removeFile("temp/" + id);
-                }
+          if (qr) {
+            if (!res.headersSent) {
+              const qrBuffer = await QRCode.toBuffer(qr);
+              res.end(qrBuffer);
+            }
+          }
+
+          if (connection === 'open') {
+            console.log('[QR] Connection open — sending session ID...');
+            await delay(5000);
+
+            const credsPath = path.join(tempDir, 'creds.json');
+
+            // Wait until creds.json actually exists
+            let retries = 10;
+            while (!fs.existsSync(credsPath) && retries-- > 0) {
+              await delay(1000);
+            }
+
+            if (!fs.existsSync(credsPath)) {
+              console.error('[QR] creds.json not found after retries');
+              await socket.ws.close();
+              removeFile(tempDir);
+              return;
+            }
+
+            const credsData = fs.readFileSync(credsPath);
+            const sessionId = SESSION_PREFIX + Buffer.from(credsData).toString('base64');
+
+            const sessionMsg = await socket.sendMessage(socket.user.id, { text: sessionId });
+            console.log('[QR] Session ID sent ✓');
+
+            const infoText =
+              `╔══════════════════════╗\n` +
+              `║   SESSION GENERATED   ║\n` +
+              `╠══════════════════════╣\n` +
+              `║ Bot    : JUNE-X       ║\n` +
+              `║ Type   : Base64       ║\n` +
+              `║ Status : Active ✅    ║\n` +
+              `╠══════════════════════╣\n` +
+              `║ Copy the session ID   ║\n` +
+              `║ above and set it as  ║\n` +
+              `║ SESSION_ID in your   ║\n` +
+              `║ bot config / Heroku. ║\n` +
+              `╚══════════════════════╝\n\n` +
+              `⭐ Star the repo if this helped!`;
+
+            await socket.sendMessage(socket.user.id, { text: infoText }, { quoted: sessionMsg });
+            console.log('[QR] Info message sent ✓');
+
+            await delay(1000);
+            await socket.ws.close();
+            removeFile(tempDir);
+
+          } else if (connection === 'close') {
+            const code = lastDisconnect?.error?.output?.statusCode;
+            console.log(`[QR] Connection closed — code: ${code}`);
+            if (code !== 401) {
+              await delay(10000);
+              startQRSession();
+            } else {
+              removeFile(tempDir);
+            }
+          }
+        } catch (err) {
+          console.error('[QR connection.update error]', err);
+          try { await socket.ws.close(); } catch (_) {}
+          removeFile(tempDir);
         }
-        return await RAVEN()
+      });
+
+    } catch (err) {
+      console.error('[QR Session Error]', err);
+      if (!res.headersSent) {
+        res.json({ code: 'Service temporarily unavailable. Please try again.' });
+      }
+      removeFile(tempDir);
+    }
+  }
+
+  return startQRSession();
 });
-module.exports = router
+
+module.exports = router;
